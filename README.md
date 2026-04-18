@@ -31,6 +31,20 @@ Use either `JINKA_ACCESS_TOKEN` or the `JINKA_EMAIL` / `JINKA_PASSWORD` pair. Ac
 
 Credentials are read from environment variables at runtime and are never written by this server.
 
+## Passwordless Jinka Accounts
+
+Jinka currently exposes Google, Apple, and email-code sign-in on the web app. Those flows do not provide a reusable password for `POST /apiv2/user/auth`.
+
+For Google or email-code accounts, use an API bearer token from an authenticated Jinka session:
+
+1. Sign in to Jinka in a browser.
+2. Open the browser's network inspector and filter requests for `api.jinka.fr`.
+3. Open a request such as `GET /apiv2/alert` or `GET /apiv2/alert/{alertId}/dashboard`.
+4. Copy the request `Authorization` header value after `Bearer `.
+5. Set that value as `JINKA_ACCESS_TOKEN`.
+
+If the web app no longer sends `api.jinka.fr` bearer requests from the browser, this MCP needs a separate web-session auth adapter. Do not guess mutation or auth request shapes from an unauthenticated page.
+
 ## Stdio Transport
 
 Use stdio for local CLI clients:
@@ -57,6 +71,23 @@ Example MCP config:
     }
   }
 }
+```
+
+## Codex CLI
+
+Register the local stdio server:
+
+```bash
+codex mcp add jinka \
+  --env JINKA_ACCESS_TOKEN="<jinka-api-bearer-token>" \
+  --env JINKA_ENABLE_WRITE_TOOLS="false" \
+  -- /bin/sh -lc 'cd /path/to/jinka-mcp && npm run mcp:stdio'
+```
+
+Then restart Codex and ask for a Jinka tool call, for example:
+
+```text
+List my Jinka alerts.
 ```
 
 ## HTTP Transport
