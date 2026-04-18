@@ -77,6 +77,18 @@ describe("JinkaClient", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("does not retry a rejected supplied access token", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse({ error: "expired" }, { status: 401 }));
+    const client = new JinkaClient({
+      accessToken: "expired-token",
+      requestDelayMs: 0,
+      fetch: fetchMock as never
+    });
+
+    await expect(client.listAlerts()).rejects.toBeInstanceOf(JinkaApiError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it("authenticates and lists alerts", async () => {
     const fetchMock = vi
       .fn()

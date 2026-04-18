@@ -31,6 +31,25 @@ Use either `JINKA_ACCESS_TOKEN` or the `JINKA_EMAIL` / `JINKA_PASSWORD` pair. Ac
 
 Credentials are read from environment variables at runtime and are never written by this server.
 
+Check the configured credentials:
+
+```bash
+npm run auth:check
+```
+
+This command calls live Jinka, prints no secrets, and exits non-zero when credentials are missing or rejected.
+
+Successful output:
+
+```json
+{
+  "ok": true,
+  "authMode": "access-token",
+  "alertCount": 3,
+  "apiBaseUrl": "https://api.jinka.fr/apiv2"
+}
+```
+
 ## Passwordless Jinka Accounts
 
 Jinka currently exposes Google, Apple, and email-code sign-in on the web app. Those flows do not provide a reusable password for `POST /apiv2/user/auth`.
@@ -86,6 +105,13 @@ Then restart Codex and ask for a Jinka tool call, for example:
 
 ```text
 List my Jinka alerts.
+```
+
+When storing the token in macOS Keychain, validate it before registering the MCP:
+
+```bash
+export JINKA_ACCESS_TOKEN="$(security find-generic-password -a "$USER" -s jinka-mcp-token -w)"
+npm run auth:check
 ```
 
 ## HTTP Transport

@@ -274,7 +274,11 @@ export class JinkaClient {
       body: options.body
     });
 
-    if ((response.status === 401 || response.status === 403) && options.retryAuth !== false) {
+    if (
+      (response.status === 401 || response.status === 403) &&
+      options.retryAuth !== false &&
+      !this.configuredAccessToken
+    ) {
       this.accessToken = null;
       await this.authenticate();
       return this.requestRaw(method, path, { ...options, retryAuth: false });

@@ -13,6 +13,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "auth:check": "tsx src/cli/auth-check.ts",
     "mcp:stdio": "tsx src/index-stdio.ts",
     "dev:http": "tsx watch src/index-http.ts",
     "start:http": "node dist/index-http.js"
