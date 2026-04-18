@@ -45,6 +45,38 @@ function createClient(fetchMock: ReturnType<typeof vi.fn>) {
 }
 
 describe("JinkaClient", () => {
+  it("uses a supplied access token without password authentication", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse([]));
+    const client = new JinkaClient({
+      accessToken: "direct-token",
+      requestDelayMs: 0,
+      fetch: fetchMock as never
+    });
+
+    const alerts = await client.listAlerts();
+
+    expect(alerts).toEqual([]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "https://api.jinka.fr/apiv2/alert",
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer direct-token" })
+      })
+    );
+  });
+
+  it("requires either a supplied access token or password credentials", async () => {
+    const fetchMock = vi.fn();
+    const client = new JinkaClient({
+      requestDelayMs: 0,
+      fetch: fetchMock as never
+    });
+
+    await expect(client.listAlerts()).rejects.toThrow("Jinka authentication requires JINKA_ACCESS_TOKEN");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("authenticates and lists alerts", async () => {
     const fetchMock = vi
       .fn()

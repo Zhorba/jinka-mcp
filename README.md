@@ -21,10 +21,13 @@ Fill `.env`:
 ```text
 JINKA_EMAIL=you@example.com
 JINKA_PASSWORD=your-password
+JINKA_ACCESS_TOKEN=
 JINKA_API_BASE_URL=https://api.jinka.fr/apiv2
 JINKA_REQUEST_DELAY_MS=250
 JINKA_ENABLE_WRITE_TOOLS=false
 ```
+
+Use either `JINKA_ACCESS_TOKEN` or the `JINKA_EMAIL` / `JINKA_PASSWORD` pair. Accounts created with Google or email code login usually do not have a Jinka password; for those accounts, provide a Jinka API bearer token through `JINKA_ACCESS_TOKEN`.
 
 Credentials are read from environment variables at runtime and are never written by this server.
 
@@ -48,6 +51,7 @@ Example MCP config:
       "env": {
         "JINKA_EMAIL": "${JINKA_EMAIL}",
         "JINKA_PASSWORD": "${JINKA_PASSWORD}",
+        "JINKA_ACCESS_TOKEN": "${JINKA_ACCESS_TOKEN}",
         "JINKA_ENABLE_WRITE_TOOLS": "false"
       }
     }

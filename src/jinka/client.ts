@@ -28,8 +28,9 @@ type ResponseLike = {
 };
 
 export type JinkaClientConfig = {
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
+  accessToken?: string;
   apiBaseUrl?: string;
   requestDelayMs?: number;
   timeoutMs?: number;
@@ -72,6 +73,7 @@ export class JinkaClient {
     this.fetchImpl = config.fetch ?? fetch;
     this.requestDelayMs = config.requestDelayMs ?? 250;
     this.timeoutMs = config.timeoutMs ?? 30000;
+    this.accessToken = config.accessToken ?? null;
   }
 
   async listAlerts(): Promise<JinkaAlert[]> {
@@ -197,6 +199,15 @@ export class JinkaClient {
   }
 
   private async authenticate(): Promise<void> {
+    if (this.config.accessToken) {
+      this.accessToken = this.config.accessToken;
+      return;
+    }
+
+    if (!this.config.email || !this.config.password) {
+      throw new Error("Jinka authentication requires JINKA_ACCESS_TOKEN or both JINKA_EMAIL and JINKA_PASSWORD.");
+    }
+
     const authUrl = `${this.apiBaseUrl}/user/auth`;
     const body = new URLSearchParams({
       email: this.config.email,

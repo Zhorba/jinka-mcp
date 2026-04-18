@@ -4,8 +4,9 @@ export type RuntimeConfig = {
   port: number;
   mcpApiKey?: string;
   jinka: {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
+    accessToken?: string;
     apiBaseUrl: string;
     requestDelayMs: number;
     enableWriteTools: boolean;
@@ -14,9 +15,14 @@ export type RuntimeConfig = {
 };
 
 export function loadConfig(options: { requireMcpApiKey?: boolean } = {}): RuntimeConfig {
-  const email = requiredEnv("JINKA_EMAIL");
-  const password = requiredEnv("JINKA_PASSWORD");
+  const email = process.env.JINKA_EMAIL?.trim();
+  const password = process.env.JINKA_PASSWORD?.trim();
+  const accessToken = process.env.JINKA_ACCESS_TOKEN?.trim();
   const mcpApiKey = process.env.MCP_API_KEY?.trim();
+
+  if (!accessToken && (!email || !password)) {
+    throw new Error("Set either JINKA_ACCESS_TOKEN or both JINKA_EMAIL and JINKA_PASSWORD.");
+  }
 
   if (options.requireMcpApiKey && !mcpApiKey) {
     throw new Error("MCP_API_KEY is required for HTTP transport.");
@@ -28,20 +34,13 @@ export function loadConfig(options: { requireMcpApiKey?: boolean } = {}): Runtim
     jinka: {
       email,
       password,
+      accessToken,
       apiBaseUrl: process.env.JINKA_API_BASE_URL?.trim() || "https://api.jinka.fr/apiv2",
       requestDelayMs: readIntEnv("JINKA_REQUEST_DELAY_MS", 250),
       enableWriteTools: readBoolEnv("JINKA_ENABLE_WRITE_TOOLS", false),
       timeoutMs: readIntEnv("JINKA_TIMEOUT_MS", 30000)
     }
   };
-}
-
-function requiredEnv(name: string): string {
-  const value = process.env[name]?.trim();
-  if (!value) {
-    throw new Error(`${name} is required.`);
-  }
-  return value;
 }
 
 function readIntEnv(name: string, fallback: number): number {
