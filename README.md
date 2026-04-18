@@ -38,19 +38,17 @@ Jinka currently exposes Google, Apple, and email-code sign-in on the web app. Th
 For Google or email-code accounts, use an API bearer token from an authenticated Jinka session:
 
 1. Sign in to Jinka in a browser.
-2. Open the browser's network inspector and filter requests for `api.jinka.fr`.
-3. Open a request such as `GET /apiv2/alert` or `GET /apiv2/alert/{alertId}/dashboard`.
-4. Copy the request `Authorization` header value. Both `Bearer <token>` and the raw token are accepted.
-5. Set that value as `JINKA_ACCESS_TOKEN`.
-
-If the web app no longer sends `api.jinka.fr` bearer requests from the browser, this MCP needs a separate web-session auth adapter. Do not guess mutation or auth request shapes from an unauthenticated page.
+2. Open the browser's network inspector.
+3. Prefer a request to `api.jinka.fr`, such as `GET /apiv2/alert` or `GET /apiv2/alert/{alertId}/dashboard`, and copy the `Authorization` header value.
+4. If the browser only shows `www.jinka.fr` requests, copy the `LA_API_TOKEN` cookie value. Do not copy the full `Cookie` header.
+5. Set that value as `JINKA_ACCESS_TOKEN`. Both `Bearer <token>` and the raw token are accepted.
 
 ## Stdio Transport
 
 Use stdio for local CLI clients:
 
 ```bash
-npm run mcp:stdio
+npm run --silent mcp:stdio
 ```
 
 Example MCP config:
@@ -60,7 +58,7 @@ Example MCP config:
   "mcpServers": {
     "jinka": {
       "command": "npm",
-      "args": ["run", "mcp:stdio"],
+      "args": ["run", "--silent", "mcp:stdio"],
       "cwd": "/path/to/jinka-mcp",
       "env": {
         "JINKA_EMAIL": "${JINKA_EMAIL}",
@@ -81,7 +79,7 @@ Register the local stdio server:
 codex mcp add jinka \
   --env JINKA_ACCESS_TOKEN="<jinka-api-bearer-token>" \
   --env JINKA_ENABLE_WRITE_TOOLS="false" \
-  -- /bin/sh -lc 'cd /path/to/jinka-mcp && npm run mcp:stdio'
+  -- /bin/sh -lc 'cd /path/to/jinka-mcp && npm run --silent mcp:stdio'
 ```
 
 Then restart Codex and ask for a Jinka tool call, for example:
