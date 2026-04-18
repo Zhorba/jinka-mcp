@@ -4,6 +4,10 @@ Private MCP server for [Jinka](https://www.jinka.fr/) real-estate alerts.
 
 The server exposes a Jinka account to MCP-compatible clients such as Codex, Claude Code, Claude Desktop, and future HTTP MCP clients. V1 is MCP-only and returns normalized JSON suitable for a later kanban dashboard.
 
+## Disclaimer
+
+This project is an unofficial, independent MCP server. It is not affiliated with, endorsed by, sponsored by, or maintained by Jinka or LouerAgile.
+
 ## Requirements
 
 - Node 22+
