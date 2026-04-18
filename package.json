@@ -1,0 +1,33 @@
+{
+  "name": "jinka-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Private MCP server for Jinka real-estate alerts.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "mcp:stdio": "tsx src/index-stdio.ts",
+    "dev:http": "tsx watch src/index-http.ts",
+    "start:http": "node dist/index-http.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  }
+}
