@@ -64,6 +64,7 @@ export class JinkaClient {
   private readonly fetchImpl: FetchLike;
   private readonly requestDelayMs: number;
   private readonly timeoutMs: number;
+  private readonly configuredAccessToken: string | null;
   private accessToken: string | null = null;
   private lastRequestAt = 0;
 
@@ -73,7 +74,8 @@ export class JinkaClient {
     this.fetchImpl = config.fetch ?? fetch;
     this.requestDelayMs = config.requestDelayMs ?? 250;
     this.timeoutMs = config.timeoutMs ?? 30000;
-    this.accessToken = config.accessToken ?? null;
+    this.configuredAccessToken = normalizeAccessToken(config.accessToken);
+    this.accessToken = this.configuredAccessToken;
   }
 
   async listAlerts(): Promise<JinkaAlert[]> {
@@ -199,8 +201,8 @@ export class JinkaClient {
   }
 
   private async authenticate(): Promise<void> {
-    if (this.config.accessToken) {
-      this.accessToken = this.config.accessToken;
+    if (this.configuredAccessToken) {
+      this.accessToken = this.configuredAccessToken;
       return;
     }
 
@@ -343,6 +345,12 @@ const defaultUserAgent =
 
 function trimTrailingSlash(value: string): string {
   return value.replace(/\/+$/, "");
+}
+
+function normalizeAccessToken(value?: string): string | null {
+  const token = value?.trim();
+  if (!token) return null;
+  return token.replace(/^Bearer\s+/i, "").trim() || null;
 }
 
 function asRecord(value: unknown): Record<string, unknown> {

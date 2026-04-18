@@ -40,7 +40,7 @@ For Google or email-code accounts, use an API bearer token from an authenticated
 1. Sign in to Jinka in a browser.
 2. Open the browser's network inspector and filter requests for `api.jinka.fr`.
 3. Open a request such as `GET /apiv2/alert` or `GET /apiv2/alert/{alertId}/dashboard`.
-4. Copy the request `Authorization` header value after `Bearer `.
+4. Copy the request `Authorization` header value. Both `Bearer <token>` and the raw token are accepted.
 5. Set that value as `JINKA_ACCESS_TOKEN`.
 
 If the web app no longer sends `api.jinka.fr` bearer requests from the browser, this MCP needs a separate web-session auth adapter. Do not guess mutation or auth request shapes from an unauthenticated page.

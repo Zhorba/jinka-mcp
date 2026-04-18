@@ -48,7 +48,7 @@ describe("JinkaClient", () => {
   it("uses a supplied access token without password authentication", async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse([]));
     const client = new JinkaClient({
-      accessToken: "direct-token",
+      accessToken: "Bearer direct-token",
       requestDelayMs: 0,
       fetch: fetchMock as never
     });
