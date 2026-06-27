@@ -170,6 +170,7 @@ describe("JinkaClient", () => {
       expect.objectContaining({
         id: "ad-1",
         alertId: "alert-1",
+        url: "https://api.jinka.fr/alert_result_view_ad?ad=ad-1&alert_token=alert-1",
         sourceLabel: "SeLoger",
         sourceLogo: "https://example.com/logo.png",
         sourceIsPartner: true,
@@ -222,6 +223,8 @@ describe("JinkaClient", () => {
     expect(dashboard.listings[0]).toEqual(
       expect.objectContaining({
         id: "buy-1",
+        alertId: "alert-1",
+        url: "https://api.jinka.fr/alert_result_view_ad?ad=buy-1&alert_token=alert-1",
         searchType: "for_buy",
         transactionType: "buy",
         propertyType: "Maison",

@@ -10,6 +10,12 @@ import type {
 
 export const dashboardFilters = ["all", "read", "unread", "favorite", "contact", "deleted"] as const;
 
+const AD_REDIRECT_BASE = "https://api.jinka.fr/alert_result_view_ad";
+
+function buildListingUrl(id: string, alertId: string): string {
+  return `${AD_REDIRECT_BASE}?ad=${encodeURIComponent(id)}&alert_token=${encodeURIComponent(alertId)}`;
+}
+
 export function normalizeAlert(raw: unknown): JinkaAlert {
   const record = asRecord(raw);
   const id = stringify(record.id);
@@ -63,6 +69,7 @@ export function normalizeListing(raw: unknown, alertId: string): JinkaListing {
   return {
     id,
     alertId,
+    url: buildListingUrl(id, alertId),
     source: nullableString(record.source),
     sourceLabel: nullableString(record.source_label),
     sourceLogo: nullableString(record.source_logo),
@@ -169,6 +176,7 @@ function toKanbanCard(listing: JinkaListing, resolvedLink?: string): JinkaKanban
   return {
     id: listing.id,
     alertId: listing.alertId,
+    url: listing.url,
     title: titleParts.length > 0 ? titleParts.join(" - ") : listing.id,
     source: listing.sourceLabel ?? listing.source,
     city: listing.city,

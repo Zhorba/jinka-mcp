@@ -30,6 +30,7 @@ describe("kanban normalization", () => {
     expect(kanban.columns[0].cards[0]).toEqual(
       expect.objectContaining({
         id: "ad-1",
+        url: "https://api.jinka.fr/alert_result_view_ad?ad=ad-1&alert_token=alert-1",
         title: "ad-1",
         price: null,
         rent: null,
