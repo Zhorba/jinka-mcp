@@ -266,6 +266,43 @@ describe("JinkaClient", () => {
     expect(listings.map((listing) => listing.id)).toEqual(["ad-1", "ad-2"]);
   });
 
+  it("populates sourceUrl on each listing when resolveUrls is true", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({ access_token: "token-1" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          pagination: { nbPages: 1, totals: {} },
+          ads: [{ id: "ad-1", rent: 1200, city: "Paris" }]
+        })
+      )
+      .mockResolvedValueOnce(textResponse("", { url: "https://seloger.com/annonces/ad-1.htm" }));
+    const client = createClient(fetchMock);
+
+    const listings = await client.listListings({ alertId: "alert-1", resolveUrls: true });
+
+    expect(listings[0].sourceUrl).toBe("https://seloger.com/annonces/ad-1.htm");
+    expect(listings[0].url).toBe("https://api.jinka.fr/alert_result_view_ad?ad=ad-1&alert_token=alert-1");
+  });
+
+  it("leaves sourceUrl null when resolution fails and resolveUrls is true", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({ access_token: "token-1" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          pagination: { nbPages: 1, totals: {} },
+          ads: [{ id: "ad-1", rent: 1200 }]
+        })
+      )
+      .mockResolvedValueOnce(jsonResponse({ error: "not found" }, { status: 404 }));
+    const client = createClient(fetchMock);
+
+    const listings = await client.listListings({ alertId: "alert-1", resolveUrls: true });
+
+    expect(listings[0].sourceUrl).toBeNull();
+  });
+
   it("resolves listing links through the redirect endpoint", async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(textResponse("", { url: "https://source.example/ad-1" }));
     const client = createClient(fetchMock);
