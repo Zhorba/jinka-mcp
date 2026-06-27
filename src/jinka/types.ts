@@ -28,6 +28,7 @@ export type JinkaListing = {
   id: string;
   alertId: string;
   url: string;
+  sourceUrl: string | null;
   source: string | null;
   sourceLabel: string | null;
   sourceLogo: string | null;
@@ -99,6 +100,7 @@ export type JinkaKanbanCard = {
   id: string;
   alertId: string;
   url: string;
+  sourceUrl: string | null;
   title: string;
   source: string | null;
   city: string | null;

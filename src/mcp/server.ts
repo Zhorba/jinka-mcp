@@ -92,7 +92,8 @@ function registerTools(server: McpServer, context: JinkaMcpContext): void {
       inputSchema: {
         alertId: alertIdSchema.optional(),
         filter: filterSchema.default("all"),
-        maxPagesPerAlert: maxPagesSchema
+        maxPagesPerAlert: maxPagesSchema,
+        resolveUrls: z.boolean().default(false).describe("Follow each ad redirect to populate sourceUrl with the canonical source listing URL. Makes one extra request per listing.")
       },
       annotations: readOnlyAnnotations
     },

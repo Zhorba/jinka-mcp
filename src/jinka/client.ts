@@ -41,6 +41,7 @@ export type ListListingsOptions = {
   alertId?: string;
   filter?: DashboardFilter;
   maxPagesPerAlert?: number;
+  resolveUrls?: boolean;
 };
 
 export class JinkaApiError extends Error {
@@ -139,7 +140,20 @@ export class JinkaClient {
       }
     }
 
-    return dedupeById(listings);
+    const deduped = dedupeById(listings);
+
+    if (options.resolveUrls) {
+      for (const listing of deduped) {
+        try {
+          const resolved = await this.resolveListingLink(listing.alertId, listing.id);
+          listing.sourceUrl = resolved.url;
+        } catch {
+          // resolution failure leaves sourceUrl null
+        }
+      }
+    }
+
+    return deduped;
   }
 
   async resolveListingLink(alertId: string, listingId: string): Promise<{ listingId: string; alertId: string; url: string }> {
@@ -149,7 +163,7 @@ export class JinkaClient {
 
     const response = await this.rawFetch(url.toString(), {
       method: "GET",
-      headers: this.webHeaders()
+      headers: this.apiHeaders()
     });
 
     if (!response.ok) {
