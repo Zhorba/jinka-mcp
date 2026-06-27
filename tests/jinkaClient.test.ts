@@ -144,8 +144,14 @@ describe("JinkaClient", () => {
               id: "ad-1",
               source: "seloger",
               source_label: "SeLoger",
+              source_logo: "https://example.com/logo.png",
+              source_is_partner: true,
+              external_id: 98765,
+              reference: "REF-123",
               rent: 1200,
+              previous_rent: 1300,
               area: 40,
+              land_area: 120,
               room: 2,
               city: "Paris",
               postal_code: "75011",
@@ -165,11 +171,73 @@ describe("JinkaClient", () => {
         id: "ad-1",
         alertId: "alert-1",
         sourceLabel: "SeLoger",
+        sourceLogo: "https://example.com/logo.png",
+        sourceIsPartner: true,
+        externalId: "98765",
+        reference: "REF-123",
+        transactionType: "rent",
+        price: null,
+        priceMax: null,
+        previousPrice: null,
+        priceEvolution: null,
+        rent: 1200,
+        rentMax: null,
+        previousRent: 1300,
+        previousRentAt: null,
+        rentEvolution: -100,
+        landArea: 120,
         pricePerM2: 30,
         status: expect.objectContaining({ isFavorite: true, isRead: true, isUnread: false })
       })
     );
     expect(String(fetchMock.mock.calls[1][0])).toBe("https://api.jinka.fr/apiv2/alert/alert-1/dashboard?filter=all&page=1");
+  });
+
+  it("exposes price fields and nulls rent fields for buy listings", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({ access_token: "token-1" }))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          pagination: { nbPages: 1, totals: {} },
+          ads: [
+            {
+              id: "buy-1",
+              source: "pap",
+              search_type: "for_buy",
+              price: 450000,
+              price_max: 460000,
+              previous_price: 470000,
+              previous_price_at: "2026-04-17T10:00:00Z",
+              area: 90,
+              type: "Maison"
+            }
+          ]
+        })
+      );
+    const client = createClient(fetchMock);
+
+    const dashboard = await client.getAlertDashboard({ alertId: "alert-1", page: 1, filter: "all" });
+
+    expect(dashboard.listings[0]).toEqual(
+      expect.objectContaining({
+        id: "buy-1",
+        searchType: "for_buy",
+        transactionType: "buy",
+        propertyType: "Maison",
+        price: 450000,
+        priceMax: 460000,
+        previousPrice: 470000,
+        previousPriceAt: "2026-04-17T10:00:00Z",
+        pricePerM2: 5000,
+        priceEvolution: -20000,
+        rent: null,
+        rentMax: null,
+        previousRent: null,
+        previousRentAt: null,
+        rentEvolution: null
+      })
+    );
   });
 
   it("lists listings across dashboard pages and deduplicates ids", async () => {
