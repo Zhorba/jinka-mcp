@@ -24,15 +24,17 @@ describe("kanban normalization", () => {
   });
 
   it("keeps cards usable with sparse payloads", () => {
-    const listing = normalizeListing({ id: "ad-1" }, "alert-1");
+    const listing = normalizeListing({ id: "ad-1", landArea: "250" }, "alert-1");
     const kanban = buildKanban([listing]);
 
     expect(kanban.columns[0].cards[0]).toEqual(
       expect.objectContaining({
         id: "ad-1",
         title: "ad-1",
+        price: null,
         rent: null,
         area: null,
+        landArea: 250,
         pricePerM2: null
       })
     );

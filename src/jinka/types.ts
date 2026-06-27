@@ -29,11 +29,19 @@ export type JinkaListing = {
   alertId: string;
   source: string | null;
   sourceLabel: string | null;
+  sourceLogo: string | null;
+  sourceIsPartner: boolean | null;
+  externalId: string | null;
+  reference: string | null;
   searchType: string | null;
   ownerType: string | null;
+  transactionType: "buy" | "rent";
+  price: number | null;
+  priceMax: number | null;
   rent: number | null;
   rentMax: number | null;
   area: number | null;
+  landArea: number | null;
   rooms: number | null;
   bedrooms: number | null;
   floor: number | null;
@@ -49,6 +57,8 @@ export type JinkaListing = {
   createdAt: string | null;
   expiredAt: string | null;
   sentAt: string | null;
+  previousPrice: number | null;
+  previousPriceAt: string | null;
   previousRent: number | null;
   previousRentAt: string | null;
   favorite: boolean;
@@ -57,6 +67,7 @@ export type JinkaListing = {
   deletedAt: string | null;
   newRealEstate: boolean;
   pricePerM2: number | null;
+  priceEvolution: number | null;
   rentEvolution: number | null;
   geoCoords: string | null;
   webviewLink: string | null;
@@ -90,8 +101,11 @@ export type JinkaKanbanCard = {
   source: string | null;
   city: string | null;
   postalCode: string | null;
+  transactionType: "buy" | "rent";
+  price: number | null;
   rent: number | null;
   area: number | null;
+  landArea: number | null;
   pricePerM2: number | null;
   createdAt: string | null;
   expiredAt: string | null;

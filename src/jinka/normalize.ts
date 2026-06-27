@@ -43,8 +43,13 @@ export function normalizePagination(raw: unknown): JinkaPagination {
 export function normalizeListing(raw: unknown, alertId: string): JinkaListing {
   const record = asRecord(raw);
   const id = stringify(record.id);
-  const rent = nullableNumber(record.rent);
-  const previousRent = nullableNumber(record.previous_rent);
+  const transactionType: "buy" | "rent" = record.search_type === "for_buy" ? "buy" : "rent";
+  const isBuy = transactionType === "buy";
+  const amount = nullableNumber(record.price) ?? nullableNumber(record.rent);
+  const amountMax = nullableNumber(record.price_max) ?? nullableNumber(record.rent_max);
+  const previousAmount = nullableNumber(record.previous_price) ?? nullableNumber(record.previous_rent);
+  const previousAmountAt = nullableString(record.previous_price_at) ?? nullableString(record.previous_rent_at);
+  const evolution = amount !== null && previousAmount !== null ? amount - previousAmount : null;
   const area = nullableNumber(record.area);
   const latitude = nullableNumber(record.lat);
   const longitude = nullableNumber(record.lng);
@@ -60,11 +65,19 @@ export function normalizeListing(raw: unknown, alertId: string): JinkaListing {
     alertId,
     source: nullableString(record.source),
     sourceLabel: nullableString(record.source_label),
+    sourceLogo: nullableString(record.source_logo),
+    sourceIsPartner: nullableBoolean(record.source_is_partner),
+    externalId: nullableString(record.external_id) ?? nullableString(record.externalId),
+    reference: nullableString(record.reference),
     searchType: nullableString(record.search_type),
     ownerType: nullableString(record.owner_type),
-    rent,
-    rentMax: nullableNumber(record.rent_max),
+    transactionType,
+    price: isBuy ? amount : null,
+    priceMax: isBuy ? amountMax : null,
+    rent: isBuy ? null : amount,
+    rentMax: isBuy ? null : amountMax,
     area,
+    landArea: nullableNumber(record.land_area) ?? nullableNumber(record.landArea),
     rooms: nullableNumber(record.room),
     bedrooms: nullableNumber(record.bedroom),
     floor: nullableNumber(record.floor),
@@ -80,15 +93,18 @@ export function normalizeListing(raw: unknown, alertId: string): JinkaListing {
     createdAt: nullableString(record.created_at),
     expiredAt,
     sentAt: nullableString(record.sendDate) ?? nullableString(record.send_date),
-    previousRent,
-    previousRentAt: nullableString(record.previous_rent_at),
+    previousPrice: isBuy ? previousAmount : null,
+    previousPriceAt: isBuy ? previousAmountAt : null,
+    previousRent: isBuy ? null : previousAmount,
+    previousRentAt: isBuy ? null : previousAmountAt,
     favorite,
     contacted,
     clickedAt,
     deletedAt,
     newRealEstate,
-    pricePerM2: rent !== null && area && area > 0 ? round(rent / area) : null,
-    rentEvolution: rent !== null && previousRent !== null ? previousRent - rent : null,
+    pricePerM2: amount !== null && area && area > 0 ? round(amount / area) : null,
+    priceEvolution: isBuy ? evolution : null,
+    rentEvolution: isBuy ? null : evolution,
     geoCoords: latitude !== null && longitude !== null ? `${latitude}, ${longitude}` : null,
     webviewLink: nullableString(record.webview_link),
     status: {
@@ -157,8 +173,11 @@ function toKanbanCard(listing: JinkaListing, resolvedLink?: string): JinkaKanban
     source: listing.sourceLabel ?? listing.source,
     city: listing.city,
     postalCode: listing.postalCode,
+    transactionType: listing.transactionType,
+    price: listing.price,
     rent: listing.rent,
     area: listing.area,
+    landArea: listing.landArea,
     pricePerM2: listing.pricePerM2,
     createdAt: listing.createdAt,
     expiredAt: listing.expiredAt,

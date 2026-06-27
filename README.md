@@ -150,7 +150,9 @@ Mutation tools are only exposed when `JINKA_ENABLE_WRITE_TOOLS=true`. `jinka_rep
 
 ## Data Model
 
-Listings are normalized into stable fields such as `id`, `alertId`, `source`, `rent`, `area`, `city`, `postalCode`, `createdAt`, `expiredAt`, `favorite`, `contacted`, `pricePerM2`, and status flags. Raw Jinka payloads are preserved under `raw` for inspection.
+Listings are normalized into stable fields such as `id`, `alertId`, `source`, `sourceLabel`, `sourceLogo`, `sourceIsPartner`, `externalId`, `reference`, `price`, `priceMax`, `previousPrice`, `rent`, `area`, `landArea`, `city`, `postalCode`, `createdAt`, `expiredAt`, `favorite`, `contacted`, `pricePerM2`, and status flags. Raw Jinka payloads are preserved under `raw` for inspection.
+
+Jinka historically names listing amounts `rent` in API payloads, including buy listings. The normalized model exposes generic `price` fields for sale and rental use cases while keeping the existing `rent` fields as compatibility aliases.
 
 `jinka_get_kanban` groups listings into:
 
