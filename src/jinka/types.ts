@@ -29,11 +29,16 @@ export type JinkaListing = {
   alertId: string;
   source: string | null;
   sourceLabel: string | null;
+  sourceLogo: string | null;
+  sourceIsPartner: boolean | null;
+  externalId: string | null;
+  reference: string | null;
   searchType: string | null;
   ownerType: string | null;
   rent: number | null;
   rentMax: number | null;
   area: number | null;
+  landArea: number | null;
   rooms: number | null;
   bedrooms: number | null;
   floor: number | null;
@@ -92,6 +97,7 @@ export type JinkaKanbanCard = {
   postalCode: string | null;
   rent: number | null;
   area: number | null;
+  landArea: number | null;
   pricePerM2: number | null;
   createdAt: string | null;
   expiredAt: string | null;

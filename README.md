@@ -150,7 +150,7 @@ Mutation tools are only exposed when `JINKA_ENABLE_WRITE_TOOLS=true`. `jinka_rep
 
 ## Data Model
 
-Listings are normalized into stable fields such as `id`, `alertId`, `source`, `rent`, `area`, `city`, `postalCode`, `createdAt`, `expiredAt`, `favorite`, `contacted`, `pricePerM2`, and status flags. Raw Jinka payloads are preserved under `raw` for inspection.
+Listings are normalized into stable fields such as `id`, `alertId`, `source`, `sourceLabel`, `sourceLogo`, `sourceIsPartner`, `externalId`, `reference`, `rent`, `area`, `landArea`, `city`, `postalCode`, `createdAt`, `expiredAt`, `favorite`, `contacted`, `pricePerM2`, and status flags. Raw Jinka payloads are preserved under `raw` for inspection.
 
 `jinka_get_kanban` groups listings into:
 
