@@ -27,6 +27,7 @@ export type JinkaPagination = {
 export type JinkaListing = {
   id: string;
   alertId: string;
+  url: string;
   source: string | null;
   sourceLabel: string | null;
   sourceLogo: string | null;
@@ -97,6 +98,7 @@ export type JinkaKanbanColumnId = "unread" | "read" | "favorite" | "contacted" |
 export type JinkaKanbanCard = {
   id: string;
   alertId: string;
+  url: string;
   title: string;
   source: string | null;
   city: string | null;
